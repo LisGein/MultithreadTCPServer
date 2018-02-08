@@ -1,0 +1,10 @@
+# C++ objects and libs
+
+*.txt.user
+*.autosave
+*.moc
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+Makefile*
+*build-*
