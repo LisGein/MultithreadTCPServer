@@ -14,8 +14,10 @@ public:
     TcpConnectionHolder() = delete;
     TcpConnectionHolder(const TcpConnectionHolder&) = delete;
 
-    void send_message(const std::string& message);
+    void send_message(const std::string& message) const;
     std::string wait_request();
+
+    bool is_connection_active() const;
 
 private:
     int socket_;

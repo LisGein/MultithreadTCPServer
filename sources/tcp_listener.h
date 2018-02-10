@@ -8,5 +8,5 @@ public:
     int wait_request_for_connection();
 
 private:
-    int listener_;
+    const int listener_;
 };

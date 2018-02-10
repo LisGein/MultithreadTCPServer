@@ -26,17 +26,17 @@ TcpConnectionHolder::TcpConnectionHolder(TcpConnectionHolder &&holder)
     std::swap(holder.is_connection_active_, is_connection_active_);
 }
 
-void TcpConnectionHolder::send_message(const std::string &message)
+void TcpConnectionHolder::send_message(const std::string &message) const
 {
     send(socket_, message.c_str(), sizeof(message.at(0)) * message.size(), 0);
 }
 
 std::string TcpConnectionHolder::wait_request()
 {
-    const int sizeOfBuffer = 1024;
-    char buf[sizeOfBuffer];
-    int sizeOfBytes = recv(socket_, buf, sizeOfBuffer, 0);
-    if (sizeOfBytes <= 0)
+    const int size_of_buffer = 1024;
+    char buf[size_of_buffer];
+    int size_of_bytes = recv(socket_, buf, size_of_buffer, 0);
+    if (size_of_bytes <= 0)
     {
         is_connection_active_ = false;
         return std::string();
@@ -45,7 +45,7 @@ std::string TcpConnectionHolder::wait_request()
     uint size_of_message = 0;
     try
     {
-        size_of_message = std::stoi(std::string(buf, sizeOfBuffer));
+        size_of_message = std::stoi(std::string(buf, size_of_buffer));
     }
     catch (std::invalid_argument&)
     {
@@ -54,10 +54,17 @@ std::string TcpConnectionHolder::wait_request()
     }
 
     std::string data;
-    while (size_of_message > data.size())
+    while (size_of_message > 0)
     {
-        int bytes = recv(socket_, buf, sizeOfBuffer, 0);
-        data += std::string(buf, bytes);
+        int bytes = recv(socket_, buf, size_of_buffer, 0);
+        uint size_of_recv_data = bytes < size_of_message ? bytes : size_of_message;
+        data += std::string(buf, size_of_recv_data);
+        size_of_message -= size_of_recv_data;
     }
     return data;
+}
+
+bool TcpConnectionHolder::is_connection_active() const
+{
+    return is_connection_active_;
 }
