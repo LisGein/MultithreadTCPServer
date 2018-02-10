@@ -56,7 +56,7 @@ std::string TcpConnectionHolder::wait_request()
     std::string data;
     while (size_of_message > 0)
     {
-        int bytes = recv(socket_, buf, size_of_buffer, 0);
+        ssize_t bytes = recv(socket_, buf, size_of_buffer, 0);
         uint size_of_recv_data = bytes < size_of_message ? bytes : size_of_message;
         data += std::string(buf, size_of_recv_data);
         size_of_message -= size_of_recv_data;
